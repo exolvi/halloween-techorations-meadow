@@ -2,49 +2,45 @@
 using System.Threading;
 using Meadow;
 using Meadow.Devices;
+using Meadow.Foundation.Audio;
 using Meadow.Hardware;
+using Meadow.Peripherals.Speakers;
 
 namespace HalloweenTechorations
 {
     public class MeadowApp : App<F7Micro, MeadowApp>
     {
-        IDigitalOutputPort redLed;
-        IDigitalOutputPort blueLed;
-        IDigitalOutputPort greenLed;
+        IDigitalOutputPort _orangeLed;
+        IToneGenerator _speaker;
+        IAnalogInputPort _photoResistor;
 
         public MeadowApp()
         {
             ConfigurePorts();
-            BlinkLeds();
         }
 
         public void ConfigurePorts()
         {
             Console.WriteLine("Creating Outputs...");
-            redLed = Device.CreateDigitalOutputPort(Device.Pins.OnboardLedRed);
-            blueLed = Device.CreateDigitalOutputPort(Device.Pins.OnboardLedBlue);
-            greenLed = Device.CreateDigitalOutputPort(Device.Pins.OnboardLedGreen);
+            _orangeLed = Device.CreateDigitalOutputPort(Device.Pins.D10);
+            _speaker = new PiezoSpeaker(Device.CreatePwmPort(Device.Pins.D11));
+            _photoResistor = Device.CreateAnalogInputPort(Device.Pins.A00);
+            _photoResistor.Changed += _photoResistor_Changed;
         }
 
-        public void BlinkLeds()
+        private void _photoResistor_Changed(object sender, FloatChangeResult e)
         {
-            var state = false;
+            throw new NotImplementedException();
+        }
 
-            while (true)
-            {
-                int wait = 200;
+        private void PlayScaryHalloweenJingle()
+        {
 
-                state = !state;
+        }
 
-                Console.WriteLine($"State: {state}");
+        private void RunLightShow()
+        {
 
-                redLed.State = state;
-                Thread.Sleep(wait);
-                blueLed.State = state;
-                Thread.Sleep(wait);
-                greenLed.State = state;
-                Thread.Sleep(wait);
-            }
         }
     }
 }
